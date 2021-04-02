@@ -1,0 +1,37 @@
+version: '3'
+services:
+  myapp:
+    image: 'docker.io/bitnami/codeigniter:3-debian-10'
+    ports:
+      - '8000:8000'
+    volumes:
+      - '.:/app/myapp'
+    environment:
+      - DB_HOST=mariadb
+      - DB_USERNAME=root
+      - DB_PASSWORD=Password123
+      - DB_NAME=myapp
+      - CODEIGNITER_PROJECT_NAME=myapp
+    depends_on:
+      - mariadb
+  mariadb:
+    image: 'docker.io/bitnami/mariadb:10.3-debian-10'
+    environment:
+      - MARIADB_ROOT_PASSWORD=Password123
+    volumes:
+      - database-data:/bitnami/mariadb
+  phpmyadmin:
+    image: 'phpmyadmin/phpmyadmin:5.1'
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_USER=root
+      - PMA_PASSWORD=Password123
+    volumes:
+      - phpmyadmin-data:/sessions
+    depends_on:
+      - mariadb
+volumes:
+  database-data:
+  phpmyadmin-data:
